@@ -1,6 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/material.dart';
 
+import 'teacher_screen.dart';
+import 'admin_screen.dart';
+import 'home_screen.dart';
 import 'student_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -31,6 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 50),
+
               //text field for email
               TextFormField(
                 controller: emailController,
@@ -39,6 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(height: 20),
+
               //text field for password
               TextFormField(
                 controller: passController,
@@ -47,6 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(height: 20),
+
               //text field for age
               TextFormField(
                 controller: ageController,
@@ -56,6 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(height: 20),
+
               //text field for userType
               TextFormField(
                 controller: typeController,
@@ -70,24 +77,40 @@ class _LoginScreenState extends State<LoginScreen> {
                 onTap: () async {
                   //getting the shared preference instance for the app
                   SharedPreferences sp = await SharedPreferences.getInstance();
+                  String userType = typeController.text.toString();
 
                   //storing the data
                   sp.setString('email', emailController.text.toString());
                   sp.setString('age', ageController.text.toString());
-
-                  //admin , teacher, student
-                  sp.setString('userType', 'student');
+                  sp.setString('userType', userType);
                   sp.setBool('isLogin', true);
 
                   //navigating through the screen
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => StudentScreen()));
+                  if (userType == 'admin') {
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => AdminScreen()));
+                  } else if (userType == 'teacher') {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => TeacherScreen()));
+                  } else if (userType == 'student') {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => StudentScreen()));
+                  } else {
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => HomeScreen()));
+                  }
                 },
                 child: Container(
                   height: 50,
                   width: double.infinity,
                   decoration: const BoxDecoration(color: Colors.green),
-                  child: const Center(child: Text('Login')),
+                  child: const Center(
+                    child: Text('Login'),
+                  ),
                 ),
               ),
             ],
